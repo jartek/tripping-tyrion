@@ -4,11 +4,25 @@
 # loaded once.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'webmock/rspec'
+require_relative '../lib/transfermarkt'
+
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
 
+  WebMock.disable_net_connect!(allow_localhost: true)
+
+  team_page = File.open(File.dirname(__FILE__) + '/assets/team.html')
+
+  WebMock.stub_request(:get, "http://transfermarkt.com/england/startseite/verein/3299")
+         .with(headers: {
+            'Accept'=>'*/*',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent'=>'Ruby'
+         })
+         .to_return(status: 200, body: team_page, headers: {})
   # Run specs in random order to surface order dependencies. If you find an
   # order dependency and want to debug it, you can fix the order by providing
   # the seed, which is printed after each run.
