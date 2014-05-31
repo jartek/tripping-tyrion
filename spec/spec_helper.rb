@@ -7,6 +7,7 @@
 require 'webmock/rspec'
 require_relative '../lib/transfermarkt'
 
+# Too lazy to move it into a seperate file
 def is_valid_url?(url)
   return false unless url.match(URI::regexp)
   true
