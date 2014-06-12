@@ -51,4 +51,21 @@ describe Transfermarkt::Player do
     end
   end
 
+  describe "#current_club" do
+    it "returns the player's current club" do
+      expect(player.current_club).to eq("Liverpool FC")
+    end
+  end
+
+  describe "#main_position" do
+    it "returns the player's main position" do
+      expect(player.main_position).to eq("Centre Forward")
+    end
+  end
+
+  describe "#secondary_positions" do
+    it "returns the player's secondary position" do
+      expect(player.secondary_positions).to eq(["Right Wing", "Left Wing"])
+    end
+  end
 end

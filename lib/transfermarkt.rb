@@ -85,6 +85,18 @@ module Transfermarkt
       data.css('.auflistung:first tr').select { |row| row.text.include?('Nationality') }[0].css('td img:last')[0]['title'].strip.gsub("\u00A0", "")
     end
 
+    def current_club
+      data.css('.profilheader tr').select { |row| row.text.include?('Current club') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def main_position
+      data.css('.auflistung:nth-child(1) tr').select { |row| row.text.include?('Main position') }[0].css('td').text.split(":").last.strip.gsub("\u00A0", "")
+    end
+
+    def secondary_positions
+      data.css('.auflistung:nth-child(1) tr').select { |row| row.text.include?('Secondary positions') }[0].css('td a').collect { |a| a.text.strip.gsub("\u00A0", "") }
+    end
+
   end
 
   class Stadium
