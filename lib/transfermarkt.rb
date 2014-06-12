@@ -22,7 +22,7 @@ module Transfermarkt
     end
 
     def squad_size
-      data.css('.profilheader tr').select { |row| row.text.include?('Squad size') }[0].css('td').text.strip.to_i
+      data.css('.profilheader tr').select { |row| row.text.include?('Squad size') }[0].css('td').text.strip.gsub("\u00A0", "").to_i
     end
 
     def players
@@ -55,6 +55,34 @@ module Transfermarkt
 
     def initialize(url)
       @data = Nokogiri::HTML(get(url))
+    end
+
+    def full_name
+      data.css('.auflistung:first tr').select { |row| row.text.include?('Name in home country') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def date_of_birth
+      Date.parse(data.css('.auflistung:first tr').select { |row| row.text.include?('Date of birth') }[0].css('td').text.strip.gsub("\u00A0", ""))
+    end
+
+    def birthplace
+      data.css('.auflistung:first tr').select { |row| row.text.include?('Place of birth') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def height
+      data.css('.auflistung:first tr').select { |row| row.text.include?('Height') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def foot
+      data.css('.auflistung:first tr').select { |row| row.text.include?('Foot') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def main_nationality
+      data.css('.auflistung:first tr').select { |row| row.text.include?('Nationality') }[0].css('td img:first')[0]['title'].strip.gsub("\u00A0", "")
+    end
+
+    def secondary_nationality
+      data.css('.auflistung:first tr').select { |row| row.text.include?('Nationality') }[0].css('td img:last')[0]['title'].strip.gsub("\u00A0", "")
     end
 
   end
