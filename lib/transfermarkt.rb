@@ -2,9 +2,15 @@ require 'open-uri'
 require 'nokogiri'
 
 module Transfermarkt
-  BASE_DOMAIN = 'http://tra1nsfermarkt.com'
+  BASE_DOMAIN = 'http://transfermarkt.com'
+
+  def get(url)
+    open(url).read
+  end
 
   class Team
+    include Transfermarkt
+
     attr_reader :data
 
     def initialize(url)
@@ -40,18 +46,17 @@ module Transfermarkt
     def fixtures
       BASE_DOMAIN + data.css('.footer a[href*=spielplan]')[0]['href']
     end
-
-    private
-    def get url
-      open(url).read
-    end
   end
 
   class Player
+    include Transfermarkt
+
+    attr_reader :data
 
     def initialize(url)
       @data = Nokogiri::HTML(get(url))
     end
+
   end
 
   class Stadium
