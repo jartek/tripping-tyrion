@@ -110,9 +110,56 @@ module Transfermarkt
       end
       result
     end
-
   end
 
   class Stadium
+    include Transfermarkt
+
+    attr_reader :data
+
+    def initialize(url)
+      @data = Nokogiri::HTML(get(url))
+    end
+
+    def name
+      data.css('.content .profilheader tr').select { |row| row.text.include?('Name of stadium') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def capacity
+      data.css('.content .profilheader tr').select { |row| row.text.include?('Total capacity') }[0].css('td').text.strip.gsub("\u00A0", "").gsub(".", "")
+    end
+
+    def corporate_boxes
+      data.css('.content .profilheader tr').select { |row| row.text.include?('boxes') }[0].css('td').text.strip.gsub("\u00A0", "").gsub(".", "")
+    end
+
+    def year_built
+      data.css('.content .profilheader tr').select { |row| row.text.include?('Year of construction') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def turf_heating?
+      data.css('.content .profilheader tr').select { |row| row.text.include?('Turf heating') }[0].css('td').text.strip.gsub("\u00A0", "") == 'yes'
+    end
+
+    def running_track?
+      data.css('.content .profilheader tr').select { |row| row.text.include?('Running track') }[0].css('td').text.strip.gsub("\u00A0", "") == 'yes'
+    end
+
+    def surface
+      data.css('.content .profilheader tr').select { |row| row.text.include?('Surface') }[0].css('td').text.strip.gsub("\u00A0", "")
+    end
+
+    def size
+      size = data.css('.content .profilheader tr').select { |row| row.text.include?('Size of playing field') }[0].css('td').text.strip.gsub("\u00A0", "")
+      {
+        width: size.split("x").first.strip,
+        height: size.split("x").last.strip
+      }
+    end
+
+    def address
+      address_container = data.css('.box .header').select { |box| box.text.include?('Contact') }[0].parent.css('.profilheader tr')
+      address_container[1..address_container.length-2].collect{ |a| a.text.strip }
+    end
   end
 end
