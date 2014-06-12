@@ -97,6 +97,20 @@ module Transfermarkt
       data.css('.auflistung:nth-child(1) tr').select { |row| row.text.include?('Secondary positions') }[0].css('td a').collect { |a| a.text.strip.gsub("\u00A0", "") }
     end
 
+    def transfer_history
+      result = []
+      table = data.css('.responsive-table')[0].css('tbody tr')
+      table.each do |row|
+        row_hash = {}
+        row_hash['date'] = Date.parse(row.css('td:nth-child(2)').text.strip.gsub("\u00A0", ""))
+        row_hash['from'] = row.css('td:nth-child(3) a')[0]['title']
+        row_hash['to'] = row.css('td:nth-child(6) a')[0]['title']
+        row_hash['cost'] = row.css('td:nth-child(11)').text.strip
+        result << row_hash
+      end
+      result
+    end
+
   end
 
   class Stadium

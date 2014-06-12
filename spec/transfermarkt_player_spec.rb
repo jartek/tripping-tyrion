@@ -68,4 +68,22 @@ describe Transfermarkt::Player do
       expect(player.secondary_positions).to eq(["Right Wing", "Left Wing"])
     end
   end
+
+  describe "#transfer_history" do
+    it "returns the date of transfer" do
+      expect(player.transfer_history[0]['date']).to eq(Date.new(2013,1,2))
+    end
+
+    it "returns the previous club" do
+      expect(player.transfer_history[0]['from']).to eq("Chelsea FC")
+    end
+
+    it "returns the new club" do
+      expect(player.transfer_history[0]['to']).to eq("Liverpool FC")
+    end
+
+    it "returns the cost of transfer" do
+      expect(player.transfer_history[0]['cost']).to eq("15,00 Mill. €")
+    end
+  end
 end
